@@ -19,7 +19,7 @@ def calcular_CV_grupo_genes(m, posiciones_genes):
 
     return coeficiente_variacion
 
-def shapley_values(players, coalition_values):
+def valores_shapley(jugadores, valores_coaliciones):
     """
     Calcula los valores de Shapley para los jugadores.
     
@@ -32,19 +32,19 @@ def shapley_values(players, coalition_values):
     Returns:
         dict: Valor de Shapley de cada jugador.
     """
-    n = len(players)
-    shapley = {p: 0 for p in players}
+    n = len(jugadores)
+    shapley = {p: 0 for p in jugadores}
 
-    for i in players:
+    for i in jugadores:
         # recorrer todos los subconjuntos posibles que no incluyan a i
         for r in range(n):
-            for S in itertools.combinations([p for p in players if p != i], r):
+            for S in itertools.combinations([p for p in jugadores if p != i], r):
                 S = set(S)
                 S_frozen = frozenset(S)
                 S_with_i = frozenset(S | {i})
 
-                v_S = coalition_values.get(S_frozen, 0)
-                v_S_i = coalition_values.get(S_with_i, 0)
+                v_S = valores_coaliciones.get(S_frozen, 0)
+                v_S_i = valores_coaliciones.get(S_with_i, 0)
 
                 # peso combinatorio
                 weight = math.factorial(len(S)) * math.factorial(n - len(S) - 1) / math.factorial(n)
