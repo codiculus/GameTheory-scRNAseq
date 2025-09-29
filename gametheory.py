@@ -24,13 +24,13 @@ def valores_shapley(jugadores, valores_coaliciones):
     Calcula los valores de Shapley para los jugadores.
     
     Args:
-        players (list): Lista de jugadores (ej: ["A","B","C"]).
-        coalition_values (dict): Diccionario con los valores de las coaliciones.
+        jugadores (list): Lista de jugadores (ej: ["A","B","C"]).
+        valores_coaliciones (dict): Diccionario con los valores de las coaliciones.
                                  La clave es un frozenset de jugadores, ej:
                                  {frozenset(["A"]): 10, frozenset(["B","C"]): 25, ...}
 
-    Returns:
-        dict: Valor de Shapley de cada jugador.
+    Devuelve:
+        shapley (dict): Valor de Shapley de cada jugador.
     """
     n = len(jugadores)
     shapley = {p: 0 for p in jugadores}
@@ -47,8 +47,8 @@ def valores_shapley(jugadores, valores_coaliciones):
                 v_S_i = valores_coaliciones.get(S_with_i, 0)
 
                 # peso combinatorio
-                weight = math.factorial(len(S)) * math.factorial(n - len(S) - 1) / math.factorial(n)
+                peso = math.factorial(len(S)) * math.factorial(n - len(S) - 1) / math.factorial(n)
 
-                shapley[i] += weight * (v_S_i - v_S)
+                shapley[i] += peso * (v_S_i - v_S)
 
     return shapley
