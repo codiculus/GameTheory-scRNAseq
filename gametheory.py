@@ -2,22 +2,70 @@ import numpy as np
 import itertools
 import math
 
-def calcular_CV_grupo_genes(m, posiciones_genes):
+def calcular_valores_coaliciones(m, posiciones_genes, normalizar=True, metodo='cv'):
+    """
+    Calcula el valor de una coalición de genes usando diferentes métodos.
     
+    Args:
+        m (numpy.array): Matriz de expresión (genes x células)
+        posiciones_genes (list): Índices de los genes a sumar
+        normalizar (bool): Si True, aplica normalización después de sumar.
+                          Si False, usa los datos tal como están.
+        metodo (str): Método de cálculo. Opciones:
+                     'cv' - Coeficiente de variación (varianza/media)
+                     'varianza' - Varianza simple
+    
+    Returns:
+        float: Valor calculado según el método seleccionado
+    """
     # Inicializar la suma con ceros
     suma = np.zeros(m.shape[1])
 
+    # Sumar la expresión de los genes especificados
     for gen in posiciones_genes:
-        
         valores_gen = m[gen, :]  # Obtener los valores de expresión del gen
         suma += valores_gen
 
-    varianza = np.var(suma)
-    media = np.mean(suma)
+    if normalizar:
+        # NORMALIZACIÓN: Aplicar normalización después de la suma
+        # 1. Normalizar por número total de counts por célula
+        total_counts_per_cell = np.sum(m, axis=0)  # Suma total por célula
+        suma_procesada = (suma / total_counts_per_cell) * 10000  # target_sum = 1e4
+        
+        # 2. Aplicar transformación logarítmica
+        suma_procesada = np.log1p(suma_procesada)  # log(x + 1)
+    else:
+        # SIN NORMALIZACIÓN: Usar los datos tal como están
+        suma_procesada = suma
+    
+    # Calcular según el método seleccionado
+    if metodo == 'cv':
+        # Calcular coeficiente de variación
+        varianza = np.var(suma_procesada)
+        media = np.mean(suma_procesada)
+        resultado = varianza/media if media > 0 else 0
+    elif metodo == 'varianza':
+        # Calcular varianza simple
+        resultado = np.var(suma_procesada)
+    else:
+        raise ValueError(f"Método '{metodo}' no reconocido. Use 'cv' o 'varianza'.")
 
-    coeficiente_variacion = varianza/media
+    return resultado
 
-    return coeficiente_variacion
+def calcular_CV_grupo_genes(m, posiciones_genes, normalizar=True):
+    """
+    Función de compatibilidad para calcular coeficiente de variación.
+    Llama a calcular_valores_coaliciones con metodo='cv'.
+    
+    Args:
+        m (numpy.array): Matriz de expresión (genes x células)
+        posiciones_genes (list): Índices de los genes a sumar
+        normalizar (bool): Si True, aplica normalización después de sumar.
+    
+    Returns:
+        float: Coeficiente de variación
+    """
+    return calcular_valores_coaliciones(m, posiciones_genes, normalizar, metodo='cv')
 
 def valores_shapley(jugadores, valores_coaliciones):
     """
