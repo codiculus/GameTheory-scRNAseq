@@ -52,21 +52,6 @@ def calcular_valores_coaliciones(m, posiciones_genes, normalizar=True, metodo='c
 
     return resultado
 
-def calcular_CV_grupo_genes(m, posiciones_genes, normalizar=True):
-    """
-    Función de compatibilidad para calcular coeficiente de variación.
-    Llama a calcular_valores_coaliciones con metodo='cv'.
-    
-    Args:
-        m (numpy.array): Matriz de expresión (genes x células)
-        posiciones_genes (list): Índices de los genes a sumar
-        normalizar (bool): Si True, aplica normalización después de sumar.
-    
-    Returns:
-        float: Coeficiente de variación
-    """
-    return calcular_valores_coaliciones(m, posiciones_genes, normalizar, metodo='cv')
-
 def valores_shapley(jugadores, valores_coaliciones):
     """
     Calcula los valores de Shapley para los jugadores.
