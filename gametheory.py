@@ -33,7 +33,7 @@ def calcular_valores_coaliciones(m, posiciones_genes, normalizar=True, metodo='c
         suma_procesada = (suma / total_counts_per_cell) * 10000  # target_sum = 1e4
         
         # 2. Aplicar transformación logarítmica
-        suma_procesada = np.log1p(suma_procesada)  # log(x + 1)
+        suma_procesada = np.log2(1+suma_procesada)  # log(x + 1)
     else:
         # SIN NORMALIZACIÓN: Usar los datos tal como están
         suma_procesada = suma
