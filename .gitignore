@@ -1,0 +1,7 @@
+results/*.csv
+
+*.zip
+*.csv
+filtered_gene_bc_matrices
+
+__pycache__
