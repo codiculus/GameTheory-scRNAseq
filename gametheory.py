@@ -2,7 +2,7 @@ import numpy as np
 import itertools
 import math
 
-def calcular_valores_coaliciones(m, posiciones_genes, normalizar=True, metodo='cv'):
+def calcular_valores_coalicion(m, posiciones_genes, normalizar=True, metodo='cv'):
     """
     Calcula el valor de una coalición de genes usando diferentes métodos.
     
@@ -85,3 +85,90 @@ def valores_shapley(jugadores, valores_coaliciones):
                 shapley[i] += peso * (v_S_i - v_S)
 
     return shapley
+
+def calcula_valores_coaliciones(adata, nombres, indices):
+    combinaciones_todos_tamanos = []
+
+    for r in range(1, len(nombres) + 1):
+        combinaciones_todos_tamanos.extend(itertools.combinations(indices, r))
+
+    #for combinacion in combinaciones_todos_tamanos:
+    #   print(combinacion)
+
+    #with open("/Users/jose/Desktop/GameTheory_project/combinaciones.csv", "w", newline="") as archivo_csv:
+    #    escritor = csv.writer(archivo_csv)
+    #    escritor.writerows(combinaciones_todos_tamanos)
+
+    print("Tamaño combinaciones de todos los tamaños:")
+    print(len(combinaciones_todos_tamanos))
+
+    # ESTRATEGIA HÍBRIDA:
+    # 1. Matriz RAW para calcular_CV_grupo_genes (que normaliza internamente)
+    matriz_raw = np.array(adata.layers["counts"].toarray()).T
+
+    # 2. Matriz normalizada para cálculos individuales de CV, varianza y media
+    matriz_norm = np.array(adata.X.toarray()).T
+
+    num_filas, num_columnas = matriz_raw.shape
+
+    print("NOTA: Estrategia híbrida implementada:")
+    print("      - matriz_raw: Para calcular_CV_grupo_genes (normaliza internamente)")
+    print("      - matriz_norm: Para cálculos individuales de CV, varianza y media")
+
+    # Para mantener compatibilidad, usamos matriz_raw como 'matriz' principal
+    matriz = matriz_raw
+
+    print(f"Número de filas (genes): {num_filas}")
+    print(f"Número de columnas (células): {num_columnas}")
+
+    ganancias = {}
+
+    # MÉTODO DE CÁLCULO: Elegir entre 'cv' (coeficiente de variación) o 'varianza'
+    metodo_calculo = 'varianza'
+    print(f"Método de cálculo seleccionado: {metodo_calculo}")
+
+    for combinacion in combinaciones_todos_tamanos:
+        
+        ganancias[combinacion] = calcular_valores_coalicion(matriz_raw, np.array(combinacion), normalizar=True, metodo=metodo_calculo)
+
+    print("Ganancias de todas las coaliciones:")
+
+    i=0
+    gan = np.zeros(len(ganancias))
+
+    for combinacion, valor in ganancias.items():
+        gan[i] = valor
+        print(f"Combinación: {combinacion}, Valor: {valor}")
+        i += 1
+        
+    return matriz_norm, ganancias
+
+
+from combinations import ganancias_cython
+
+def calcula_valores_coaliciones_cython(adata, nombres, indices):
+    combinaciones_todos_tamanos = []
+
+    for r in range(1, len(nombres) + 1):
+        combinaciones_todos_tamanos.extend(itertools.combinations(indices, r))
+
+    print("Tamaño combinaciones de todos los tamaños:")
+    print(len(combinaciones_todos_tamanos))
+
+    # ESTRATEGIA HÍBRIDA:
+    # 1. Matriz RAW para calcular_CV_grupo_genes (que normaliza internamente)
+    matriz_raw = np.array(adata.layers["counts"].toarray()).T
+
+    # 2. Matriz normalizada para cálculos individuales de CV, varianza y media
+    matriz_norm = np.array(adata.X.toarray()).T
+
+    num_filas, num_columnas = matriz_raw.shape
+
+    # Para mantener compatibilidad, usamos matriz_raw como 'matriz' principal
+    matriz = matriz_raw
+
+    print(f"Número de filas (genes): {num_filas}")
+    print(f"Número de columnas (células): {num_columnas}")  
+
+    ganancias = ganancias_cython(combinaciones_todos_tamanos, matriz)
+

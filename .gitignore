@@ -4,4 +4,8 @@ results/*.csv
 *.csv
 filtered_gene_bc_matrices
 
+*.pyd
+build
+*.c
+
 __pycache__
