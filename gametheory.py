@@ -148,12 +148,16 @@ from combinations import ganancias_cython
 
 def calcula_valores_coaliciones_cython(adata, nombres, indices):
     combinaciones_todos_tamanos = []
+    
+    max_cols = len(nombres)
 
     for r in range(1, len(nombres) + 1):
-        combinaciones_todos_tamanos.extend(itertools.combinations(indices, r))
+        curr_combination = itertools.combinations(indices, r)
+        combinaciones_todos_tamanos.extend(curr_combination)        
 
     print("Tamaño combinaciones de todos los tamaños:")
     print(len(combinaciones_todos_tamanos))
+    print("Max cols: ", max_cols)
 
     # ESTRATEGIA HÍBRIDA:
     # 1. Matriz RAW para calcular_CV_grupo_genes (que normaliza internamente)
@@ -170,5 +174,15 @@ def calcula_valores_coaliciones_cython(adata, nombres, indices):
     print(f"Número de filas (genes): {num_filas}")
     print(f"Número de columnas (células): {num_columnas}")  
 
-    ganancias = ganancias_cython(combinaciones_todos_tamanos, matriz)
+    ganancias = ganancias_cython(combinaciones_todos_tamanos, matriz, max_cols)
+    
+    N = len(combinaciones_todos_tamanos)
+    ganancias_ret = {}
+    i = 0
+    for combinacion in combinaciones_todos_tamanos:
+        ganancias_ret[combinacion] = ganancias[i]
+        i += 1
+        
+    
+    return matriz_norm, ganancias_ret
 

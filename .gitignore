@@ -7,5 +7,6 @@ filtered_gene_bc_matrices
 *.pyd
 build
 *.c
+a*
 
 __pycache__
