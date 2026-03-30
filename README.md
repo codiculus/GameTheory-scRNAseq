@@ -1,10 +1,12 @@
 # GameTheory-scRNAseq
 
-This repository holds the code associated to the paper "Exploration of single-cell RNAseq expression variability considering gene cooperation", submitted to ECC 2026.
+This repository holds the code associated to the paper "Exploration of single-cell RNAseq expression variability considering gene cooperation", submitted to CDC 2026.
 
-The project analizes the genes that contribute most to determinate cellular structures.
+The project analizes the genes that contribute most to determinate cellular structures, introducing a new gene ranking in single-cell ribonucleic acid sequencing (scRNA-seq).
 
 All the code is available in the src folder, which has been developed using Python which the library Cython for speeding up computations. Also, the scanpy library has been used to load GNA data.
+
+Please refer to the requirements.txt file for a detailed list of dependencies.
 
 
 ## Installation
@@ -25,11 +27,22 @@ Go to the src subfolder and compile the Cython code to obtain the executable fil
  > python setup.py build_ext --inplace
 ```
 
-### Get the GNA seq data.
+### Get the sc-RNAseq data.
 
+The original dataset is available from [Insert link here]()
 
 ### Run the algorithms
 
-Run the Jupyter notebook to obtain the Figures  .... of the paper.
+We provide the user with a script that generates the results and another that can be used to generate all the Figures presented in Section IV of the paper.
 
+To run the classification please run:
 
+```
+ > ./generate_results.py
+```
+
+Once the results have been obtained, you can run the following script to generate the Figures:
+
+```
+ > ./generate_figures.py
+```
