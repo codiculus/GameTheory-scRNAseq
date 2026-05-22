@@ -35,14 +35,15 @@ The original dataset is available from [Insert link here]()
 
 We provide the user with a script that generates the results and another that can be used to generate all the Figures presented in Section IV of the paper.
 
-To run the classification please run:
+To run the classification and generate the Shapley values, please run:
 
 ```
  > ./generate_results.py
 ```
 
-Once the results have been obtained, you can run the following script to generate the Figures:
+Once the results have been obtained, you can use the following jupyter Python notebooks:
 
 ```
- > ./generate_figures.py
+ > ./violin_plots.ipynb
+ > ./scatter_plots.ipynb
 ```
